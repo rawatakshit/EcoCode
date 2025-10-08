@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SolarChain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a8e063 0%, #f0f9ff 60%, #ffeb3b 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #1a1a1a;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Energy Particles */
+        .energy-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #a8e063, transparent);
+            border-radius: 50%;
+            animation: float 8s infinite;
+            opacity: 0.6;
+            box-shadow: 0 0 10px #a8e063;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            filter: drop-shadow(0 0 10px rgba(168, 224, 99, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1a1a1a;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #56ab2f;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            padding: 3rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.2s;
+        }
+
+        .welcome-section {
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .welcome-section p {
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            box-shadow: 0 0 20px rgba(168, 224, 99, 0.8);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 224, 99, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 50px rgba(168, 224, 99, 0.4), 0 0 30px rgba(168, 224, 99, 0.3);
+            border-color: rgba(168, 224, 99, 0.6);
+        }
+
+        .stat-card:hover::after {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(168, 224, 99, 0.5));
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #56ab2f;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(86, 171, 47, 0.3);
+        }
+
+        .stat-label {
+            color: #333;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease;
+        }
+
+        .chart-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+        }
+
+        /* Progress Bars */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease;
+        }
+
+        .progress-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+        }
+
+        .progress-item {
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .progress-value {
+            font-weight: 600;
+            color: #56ab2f;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            border-radius: 10px;
+            transition: width 1.5s ease;
+            width: 0;
+            box-shadow: 0 0 20px rgba(168, 224, 99, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(168, 224, 99, 0.4);
+            animation: fadeIn 1.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .action-card:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 50px rgba(168, 224, 99, 0.6), 0 0 40px rgba(168, 224, 99, 0.4);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-card p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-button {
+            background: white;
+            color: #56ab2f;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.4);
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Energy Particles Background -->
+    <div class="energy-particles" id="particles"></div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo">☀️ SolarChain</a>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="blockchain.html">Blockchain History</a></li>
+        </ul>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>Welcome back, Riya Sharma! 👋</h1>
+            <p>Here's your energy production overview</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value">120 kWh</div>
+                <div class="stat-label">Energy Generated</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🪙</div>
+                <div class="stat-value">120</div>
+                <div class="stat-label">Green Tokens Earned</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🌱</div>
+                <div class="stat-value">85 kg</div>
+                <div class="stat-label">CO₂ Saved</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🔋</div>
+                <div class="stat-value">25 kWh</div>
+                <div class="stat-label">Surplus Available</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value">₹2,400</div>
+                <div class="stat-label">Revenue Earned</div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <h2>Energy Generated This Week</h2>
+            <canvas id="energyChart" width="400" height="150"></canvas>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <h2>Your Impact This Month</h2>
+            
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Energy Generation Goal</span>
+                    <span class="progress-value">120 / 150 kWh</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="energy-progress"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Environmental Impact</span>
+                    <span class="progress-value">85 / 100 kg CO₂</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="co2-progress"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Token Collection Progress</span>
+                    <span class="progress-value">120 / 200 Tokens</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="token-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <div class="action-card">
+                <div class="action-icon">⚡💰</div>
+                <h3>Sell Surplus Energy</h3>
+                <p>List your 25 kWh surplus energy on the marketplace</p>
+                <a href="marketplace.html" class="action-button">Go to Marketplace</a>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon">⛓️</div>
+                <h3>View Blockchain Ledger</h3>
+                <p>Track all your transactions transparently on blockchain</p>
+                <a href="blockchain.html" class="action-button">View History</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 SolarChain. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Create floating energy particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Animate progress bars on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('energy-progress').style.width = '80%';
+                document.getElementById('co2-progress').style.width = '85%';
+                document.getElementById('token-progress').style.width = '60%';
+            }, 300);
+
+            // Initialize Chart.js
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(168, 224, 99, 0.6)');
+            gradient.addColorStop(1, 'rgba(86, 171, 47, 0.1)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Energy (kWh)',
+                        data: [15, 18, 20, 17, 22, 19, 25],
+                        backgroundColor: gradient,
+                        borderColor: '#56ab2f',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#a8e063',
+                        pointBorderColor: '#56ab2f',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.3)'
+                            },
+                            ticks: {
+                                color: '#333'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.3)'
+                            },
+                            ticks: {
+                                color: '#333'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

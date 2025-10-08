@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain History - SolarChain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Animated Gradient Background: Green -> Yellow -> White/Light Blue */
+            background: linear-gradient(135deg, #a8e063 0%, #f0f9ff 60%, #fff7a0 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #1a1a1a;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Faint Animated Background Grid to represent the network */
+        .network-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(0deg, rgba(168, 224, 99, 0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(168, 224, 99, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 60s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        @keyframes gridScroll {
+            from { background-position: 0 0; }
+            to { background-position: 5000px 5000px; }
+        }
+
+
+        /* Navigation Bar (Glassmorphism & Sticky) */
+        nav {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            filter: drop-shadow(0 0 10px rgba(168, 224, 99, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1a1a1a;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #56ab2f;
+            text-shadow: 0 0 5px rgba(86, 171, 47, 0.5);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a.active::after,
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Container */
+        .blockchain-container {
+            padding: 3rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 0.8s ease forwards;
+            min-height: calc(100vh - 180px); 
+        }
+
+        .header-section {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .header-section h1 span {
+            color: #56ab2f;
+        }
+
+        .header-section p {
+            color: #333;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0.5rem auto 0;
+        }
+
+        /* Block Chain Visualization Container */
+        .chain-visualization {
+            position: relative;
+            padding: 2rem 0;
+            z-index: 5;
+            /* Update: Visualization width is (Block Width * 2) + Gap (450*2 + 50) = 950px */
+            width: 950px; 
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animated Connecting Line - Centered */
+        .chain-line {
+            width: 4px;
+            height: 0; 
+            background: linear-gradient(to bottom, #a8e063, #56ab2f);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%); /* Perfectly center the line */
+            z-index: 5; /* Line behind blocks and dots */
+            box-shadow: 0 0 15px rgba(168, 224, 99, 0.8);
+            animation: lineGlow 4s infinite alternate;
+            transition: height 0.6s ease-out, top 0.6s ease-out; 
+        }
+
+        @keyframes lineGlow {
+            0% { opacity: 0.8; box-shadow: 0 0 10px rgba(168, 224, 99, 0.8); }
+            100% { opacity: 1; box-shadow: 0 0 20px rgba(86, 171, 47, 1); }
+        }
+
+        /* Block Card (Timeline Style - Alternate Positioning) */
+        .block-card {
+            /* Update: Increased Block Width for maximum space utilization */
+            width: 450px; 
+            /* Opacity remains high for readability */
+            background: rgba(255, 255, 255, 0.35); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+            cursor: pointer;
+            text-align: left;
+            
+            /* Alignment Fix: Alternate Left/Right of center line */
+            align-self: flex-start;
+            margin-left: 0;
+            z-index: 6; /* Ensure blocks are above the line */
+        }
+        
+        .block-card:first-of-type {
+            margin-top: 1.5rem; 
+        }
+
+        /* Block Card on the Right Side (even indices) */
+        .chain-visualization .block-card:nth-child(even) {
+            align-self: flex-end;
+            margin-right: 0;
+        }
+        
+        .block-card.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .block-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 8px 30px rgba(168, 224, 99, 0.4);
+            border-color: rgba(168, 224, 99, 0.6);
+        }
+        
+        /* New Block Highlight */
+        .block-card.new-block {
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 0 25px rgba(255, 235, 59, 0.8);
+        }
+
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed rgba(26, 26, 26, 0.2);
+            position: relative; 
+        }
+
+        /* Glowing Connection Dot - Final Appearance */
+        .block-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            /* Node Size: Small node (6px wide) */
+            width: 6px; 
+            height: 6px;
+            border-radius: 50%;
+            background: #56ab2f; /* Darker green center */
+            /* Hide Line Fix: Thick border matching the background to obscure the 4px line */
+            border: 5px solid #f0f9ff; 
+            box-shadow: 0 0 8px rgba(168, 224, 99, 0.8); 
+            z-index: 10;
+            
+            /* Positioning for LEFT blocks */
+            right: -24px; 
+        }
+        
+        /* Dot positioning for RIGHT blocks */
+        .chain-visualization .block-card:nth-child(even) .block-header::before {
+            left: -24px;
+            right: auto;
+        }
+
+        .block-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #56ab2f;
+            text-shadow: 0 0 10px rgba(86, 171, 47, 0.3);
+        }
+
+        .transaction-type {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .type-electricity {
+            background: linear-gradient(45deg, #00b0ff, #00d4ff);
+            box-shadow: 0 0 10px rgba(0, 176, 255, 0.6);
+        }
+
+        .type-token {
+            background: linear-gradient(45deg, #ffeb3b, #ffc107);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+        }
+
+        .block-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-label span {
+            margin-right: 0.5rem;
+            color: #56ab2f;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #1a1a1a;
+            text-align: right;
+        }
+        
+        .hash-detail .detail-value {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #007bff;
+            word-break: break-all;
+        }
+        
+        /* Action Buttons Section */
+        .action-section {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .action-btn {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(168, 224, 99, 0.5);
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 224, 99, 0.7);
+        }
+
+        /* Verification Toast/Modal Styling */
+        .verify-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: #28a745;
+            color: white;
+            padding: 1.5rem 3rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 0 30px rgba(40, 167, 69, 1), inset 0 0 10px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            transition: all 0.5s ease-out;
+            z-index: 1010;
+        }
+
+        .verify-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+            animation: neonRing 1.5s infinite alternate;
+        }
+
+        @keyframes neonRing {
+            from { box-shadow: 0 0 20px #a8e063, 0 0 40px #56ab2f; }
+            to { box-shadow: 0 0 30px #a8e063, 0 0 60px #56ab2f; }
+        }
+
+        /* Footer (Consistent Dark Style) */
+        footer {
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 4rem;
+        }
+
+        /* General Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive adjustments - Collapse to single column on mobile */
+        @media (max-width: 768px) {
+            .blockchain-container {
+                max-width: 100%;
+                padding: 3rem 2%;
+            }
+
+            .chain-visualization {
+                width: 100%; 
+                margin: 0;
+            }
+            
+            .block-card {
+                width: 90%;
+                max-width: none;
+                padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+                align-self: center !important;
+                margin: 1rem auto; /* Auto margin centers the 90% wide block */
+            }
+
+            .chain-line {
+                /* Line is now pinned to the left edge of the content on mobile */
+                left: 5%; 
+                transform: translateX(0);
+                margin-left: 10px; /* Final offset from the container edge */
+            }
+            
+            /* Adjust dot position for single column mobile layout */
+            .block-header::before,
+            .chain-visualization .block-card:nth-child(even) .block-header::before {
+                left: -1rem; 
+                right: auto;
+                /* Use a border color that matches the background color */
+                border: 3px solid #f0f9ff; 
+            }
+            
+            .action-section {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="network-grid"></div>
+
+    <nav>
+        <a href="index.html" class="logo">☀️ SolarChain</a>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="marketplace.html">Marketplace</a></li>
+            <li><a href="blockchain.html" class="active">Blockchain History</a></li>
+        </ul>
+    </nav>
+
+    <div class="blockchain-container">
+        <div class="header-section">
+            <h1>🔗 Blockchain Transaction <span>Ledger</span></h1>
+            <p>Every energy trade and token exchange, permanently recorded and verified. Each block represents a single, validated transaction.</p>
+        </div>
+
+        <div class="action-section">
+            <button class="action-btn" onclick="verifyChain()">Verify Chain</button>
+            <button class="action-btn" onclick="addNewBlock()">⚡ Add New Block (Simulate)</button>
+        </div>
+
+        <div class="chain-visualization" id="chain-visualization">
+            <div class="chain-line" id="chain-line"></div>
+
+            <div class="block-card" data-block-id="19">
+                <div class="block-header">
+                    <div class="block-number">Block #19</div>
+                    <span class="transaction-type type-electricity">Electricity Sale</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">Riya Sharma</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">EV Hub Delhi</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⚡</span>Energy Amount:</span>
+                        <span class="detail-value">10 kWh</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>Price/Unit:</span>
+                        <span class="detail-value">₹8.00</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">07 Oct 2025, 10:42 AM</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">0xF3A9B7C1...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-card" data-block-id="18">
+                <div class="block-header">
+                    <div class="block-number">Block #18</div>
+                    <span class="transaction-type type-token">Token Trade</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">Rajesh Kumar</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">Neha Gupta</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🪙</span>Tokens Traded:</span>
+                        <span class="detail-value">50 Tokens</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>Price/Token:</span>
+                        <span class="detail-value">₹9.50</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">07 Oct 2025, 10:35 AM</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">0x8B04D6E2...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-card" data-block-id="17">
+                <div class="block-header">
+                    <div class="block-number">Block #17</div>
+                    <span class="transaction-type type-electricity">Electricity Sale</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">Sunita Patel</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">Local Grid</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⚡</span>Energy Amount:</span>
+                        <span class="detail-value">45 kWh</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>Price/Unit:</span>
+                        <span class="detail-value">₹7.50</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">07 Oct 2025, 10:20 AM</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">0x1C2F5A9D...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-card" data-block-id="16">
+                <div class="block-header">
+                    <div class="block-number">Block #16</div>
+                    <span class="transaction-type type-token">Token Trade</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">Priya Reddy</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">Vikram Singh</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🪙</span>Tokens Traded:</span>
+                        <span class="detail-value">100 Tokens</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>Price/Token:</span>
+                        <span class="detail-value">₹9.00</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">07 Oct 2025, 09:55 AM</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">0x4D7E0F2B...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-card" data-block-id="15">
+                <div class="block-header">
+                    <div class="block-number">Block #15</div>
+                    <span class="transaction-type type-electricity">Electricity Sale</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">Riya Sharma</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">Local Grid</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⚡</span>Energy Amount:</span>
+                        <span class="detail-value">12 kWh</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>Price/Unit:</span>
+                        <span class="detail-value">₹7.80</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">07 Oct 2025, 09:40 AM</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">0x7A6C3B1E...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="block-card" data-block-id="14">
+                <div class="block-header">
+                    <div class="block-number">Block #14</div>
+                    <span class="transaction-type type-token">Token Trade</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">Neha Gupta</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">Rajesh Kumar</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🪙</span>Tokens Traded:</span>
+                        <span class="detail-value">75 Tokens</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>Price/Token:</span>
+                        <span class="detail-value">₹9.50</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">07 Oct 2025, 09:15 AM</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">0x3E8D6G9F...</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div id="verifyToast" class="verify-toast"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 SolarChain — Transparent, Sustainable, Decentralized.</p>
+    </footer>
+
+    <script>
+        // Mock data for new block simulation
+        let nextBlockId = 20;
+        const mockTransactions = [
+            { type: 'Electricity Sale', unit: 'kWh', value: 25, price: 8.50, seller: 'Riya Sharma', buyer: 'Local Grid', hash: '0x1A2B3C4D...' },
+            { type: 'Token Trade', unit: 'Tokens', value: 80, price: 9.80, seller: 'Amit Kumar', buyer: 'Priya Reddy', hash: '0x5E6F7081...' },
+            { type: 'Electricity Sale', unit: 'kWh', value: 5, price: 9.00, seller: 'Vikram Singh', buyer: 'EV Hub Delhi', hash: '0x92A3B4C5...' },
+        ];
+        let currentTransactionIndex = 0;
+
+        /**
+         * Calculates the total height and top offset for the chain line 
+         * based on the position of the first and last visible block cards.
+         */
+        function updateChainLine() {
+            // Only consider blocks that have completed the fade-in animation
+            const blocks = Array.from(document.querySelectorAll('.block-card.fade-in'));
+            const chainLine = document.getElementById('chain-line');
+            const chainViz = document.getElementById('chain-visualization');
+            
+            if (blocks.length === 0) {
+                chainLine.style.height = '0';
+                chainLine.style.top = '0';
+                return;
+            }
+
+            const firstBlock = blocks[0];
+            const lastBlock = blocks[blocks.length - 1];
+
+            // Get vertical positions relative to the chain-visualization container
+            const vizRect = chainViz.getBoundingClientRect();
+            const firstRect = firstBlock.getBoundingClientRect();
+            const lastRect = lastBlock.getBoundingClientRect();
+
+            // The dot is vertically centered in the header. We need that vertical offset.
+            const dotOffset = firstBlock.querySelector('.block-header').offsetHeight / 2;
+            
+            // Start Y: Top of the first block's header relative to chainViz container + dot's vertical center.
+            const startY = (firstRect.top - vizRect.top) + dotOffset;
+
+            // End Y: Top of the last block's header relative to chainViz container + dot's vertical center.
+            const endY = (lastRect.top - vizRect.top) + dotOffset;
+
+            const height = endY - startY;
+
+            // Apply the calculated values
+            chainLine.style.top = `${startY}px`;
+            chainLine.style.height = `${height}px`;
+        }
+        
+        // Function to create and return a new block HTML element
+        function createBlockElement(id, tx) {
+            const blockCard = document.createElement('div');
+            // The class is always 'block-card new-block' here. The layout is handled by CSS nth-child selector now.
+            blockCard.className = 'block-card new-block';
+            blockCard.setAttribute('data-block-id', id);
+
+            const typeClass = tx.type.includes('Electricity') ? 'type-electricity' : 'type-token';
+            const unitLabel = tx.type.includes('Electricity') ? 'Energy Amount:' : 'Tokens Traded:';
+            const priceLabel = tx.type.includes('Electricity') ? 'Price/Unit:' : 'Price/Token:';
+            const priceUnit = tx.type.includes('Electricity') ? '₹' + tx.price.toFixed(2) : '₹' + tx.price.toFixed(2);
+            const amount = tx.value + ' ' + tx.unit;
+            const timestamp = new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short', year: 'numeric' });
+
+            blockCard.innerHTML = `
+                <div class="block-header">
+                    <div class="block-number">Block #${id}</div>
+                    <span class="transaction-type ${typeClass}">${tx.type}</span>
+                </div>
+                <div class="block-details">
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>👤</span>Seller:</span>
+                        <span class="detail-value">${tx.seller}</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>🏢</span>Buyer:</span>
+                        <span class="detail-value">${tx.buyer}</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>${tx.type.includes('Electricity') ? '⚡' : '🪙'}</span>${unitLabel}</span>
+                        <span class="detail-value">${amount}</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>💰</span>${priceLabel}</span>
+                        <span class="detail-value">${priceUnit}</span>
+                    </div>
+                    <div class="block-detail-row">
+                        <span class="detail-label"><span>⏰</span>Timestamp:</span>
+                        <span class="detail-value">${timestamp}</span>
+                    </div>
+                    <div class="block-detail-row hash-detail">
+                        <span class="detail-label"><span>#</span>Hash:</span>
+                        <span class="detail-value">${tx.hash}</span>
+                    </div>
+                </div>
+            `;
+            return blockCard;
+        }
+
+        // New Block Added Simulation
+        function addNewBlock() {
+            const chainViz = document.getElementById('chain-visualization');
+            
+            // Get mock transaction data in a cycle
+            const newTx = mockTransactions[currentTransactionIndex];
+            currentTransactionIndex = (currentTransactionIndex + 1) % mockTransactions.length;
+
+            const newBlock = createBlockElement(nextBlockId++, newTx);
+            
+            // Add the new block at the top
+            chainViz.insertBefore(newBlock, chainViz.children[1]); // Insert after the chain-line div
+
+            // Force reflow/repaint to ensure animation starts
+            void newBlock.offsetWidth; 
+            
+            // Trigger the fade-in animation
+            newBlock.classList.add('fade-in');
+
+            // Update the chain line height after the new block is in place
+            // We need a slight delay to allow the CSS transition (fade-in) to finish its layout/sizing.
+            setTimeout(() => {
+                updateChainLine();
+            }, 500);
+
+            // Remove the 'new-block' highlight after a delay
+            setTimeout(() => {
+                newBlock.classList.remove('new-block');
+            }, 2000); 
+
+            // Scroll to the top of the new block smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Verify Chain Animation
+        function verifyChain() {
+            const toast = document.getElementById('verifyToast');
+            toast.innerHTML = '✅ All Blocks Verified. Integrity Intact.';
+            toast.classList.add('show');
+
+            // Hide after 2.5 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Initial setup and line update on load/resize
+        window.addEventListener('load', () => {
+            const blocks = document.querySelectorAll('.block-card');
+            blocks.forEach((block, index) => {
+                // Apply a staggered delay for the fade-in effect
+                setTimeout(() => {
+                    block.classList.add('fade-in');
+                    // Update the line when the last block has faded in
+                    if (index === blocks.length - 1) {
+                         updateChainLine();
+                    }
+                }, index * 100); 
+            });
+            
+            // Recalculate line on window resize for responsiveness
+            window.addEventListener('resize', updateChainLine);
+        });
+    </script>
+</body>
+</html>

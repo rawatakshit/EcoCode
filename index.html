@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarChain - Powering the Future of Green Energy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            background: #000;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #a8e063 0%, #f0f9ff 40%, #56ab2f 70%, #ffeb3b 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Sunlight Rays */
+        .sunrays {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 235, 59, 0.6), transparent);
+            transform-origin: top center;
+            animation: rotateRays 30s linear infinite;
+            opacity: 0.4;
+        }
+
+        .ray:nth-child(1) { transform: rotate(0deg) translateY(-50%); animation-delay: 0s; }
+        .ray:nth-child(2) { transform: rotate(45deg) translateY(-50%); animation-delay: -3.75s; }
+        .ray:nth-child(3) { transform: rotate(90deg) translateY(-50%); animation-delay: -7.5s; }
+        .ray:nth-child(4) { transform: rotate(135deg) translateY(-50%); animation-delay: -11.25s; }
+        .ray:nth-child(5) { transform: rotate(180deg) translateY(-50%); animation-delay: -15s; }
+        .ray:nth-child(6) { transform: rotate(225deg) translateY(-50%); animation-delay: -18.75s; }
+        .ray:nth-child(7) { transform: rotate(270deg) translateY(-50%); animation-delay: -22.5s; }
+        .ray:nth-child(8) { transform: rotate(315deg) translateY(-50%); animation-delay: -26.25s; }
+
+        @keyframes rotateRays {
+            0% { transform: rotate(0deg) translateY(-50%); }
+            100% { transform: rotate(360deg) translateY(-50%); }
+        }
+
+        /* Floating Energy Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #ffeb3b, transparent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUp 12s infinite;
+            box-shadow: 0 0 15px #ffeb3b;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% {
+                transform: translateY(-10vh) translateX(calc(var(--drift) * 100px)) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-hero {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 50%, #ffeb3b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(168, 224, 99, 0.6));
+            animation: glow 3s ease infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(168, 224, 99, 0.6)); }
+            50% { filter: drop-shadow(0 0 35px rgba(168, 224, 99, 0.9)); }
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+            box-shadow: 0 8px 30px rgba(86, 171, 47, 0.4);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(86, 171, 47, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+            color: #1a1a1a;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Floating Icons */
+        .float-icon {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.6;
+            animation: floatIcon 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(168, 224, 99, 0.6));
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        .icon1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .icon2 { top: 70%; left: 15%; animation-delay: 1s; }
+        .icon3 { top: 30%; right: 10%; animation-delay: 2s; }
+        .icon4 { bottom: 20%; right: 15%; animation-delay: 1.5s; }
+
+        /* Sections */
+        section {
+            padding: 6rem 5%;
+            position: relative;
+            background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(168, 224, 99, 0.6);
+        }
+
+        /* How It Works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 2.5rem;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .step-card.visible {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            box-shadow: 0 0 20px rgba(168, 224, 99, 0.8);
+        }
+
+        .step-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 15px 50px rgba(168, 224, 99, 0.4);
+            border-color: rgba(168, 224, 99, 0.6);
+        }
+
+        .step-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #56ab2f;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(86, 171, 47, 0.3);
+        }
+
+        .step-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 15px rgba(168, 224, 99, 0.5));
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .step-desc {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Flow Lines */
+        .flow-line {
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a8e063, transparent);
+            opacity: 0;
+            animation: flowPulse 3s ease infinite;
+        }
+
+        @keyframes flowPulse {
+            0%, 100% { opacity: 0; transform: translateX(-20px); }
+            50% { opacity: 1; transform: translateX(20px); }
+        }
+
+        /* Impact Section */
+        .impact-section {
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-globe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0.3;
+            animation: pulse 4s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.5; }
+        }
+
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Why Section */
+        .why-section {
+            background: #ffffff;
+        }
+
+        .why-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .why-text {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .why-text.visible {
+            animation: slideInLeft 0.8s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .why-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #56ab2f;
+        }
+
+        .why-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        .why-illustration {
+            font-size: 15rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(50px);
+            filter: drop-shadow(0 0 30px rgba(168, 224, 99, 0.4));
+        }
+
+        .why-illustration.visible {
+            animation: slideInRight 0.8s ease forwards;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            text-align: center;
+            padding: 6rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #a8e063, transparent);
+            animation: glowPulse 3s ease infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scaleX(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scaleX(1); }
+        }
+
+        .cta-text {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Floating CTA Button */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 8px 30px rgba(86, 171, 47, 0.5);
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.4s ease;
+            z-index: 1000;
+        }
+
+        .floating-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .floating-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(86, 171, 47, 0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 1.8rem; }
+            .logo-hero { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .section-title { font-size: 2rem; }
+            .why-content { grid-template-columns: 1fr; }
+            .why-illustration { font-size: 8rem; }
+            .floating-cta { bottom: 20px; right: 20px; padding: 0.8rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="sunrays">
+            <div class="ray"></div>
+            <div class="ray"></div>
+            <div class="ray"></div>
+            <div class="ray"></div>
+            <div class="ray"></div>
+            <div class="ray"></div>
+            <div class="ray"></div>
+            <div class="ray"></div>
+        </div>
+
+        <div class="particles" id="particles"></div>
+
+        <div class="float-icon icon1">☀️</div>
+        <div class="float-icon icon2">⚡</div>
+        <div class="float-icon icon3">🌱</div>
+        <div class="float-icon icon4">⛓️</div>
+
+        <div class="hero-content">
+            <div class="logo-hero">☀️ SolarChain</div>
+            <h1 class="hero-title">Powering the Future of Green Energy</h1>
+            <p class="hero-subtitle">Generate, trade, and sell your renewable energy seamlessly.</p>
+            <div class="hero-buttons">
+                <a href="dashboard.html" class="btn btn-primary">Get Started</a>
+                <button class="btn btn-secondary" onclick="scrollToSection('how-it-works')">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <div class="step-icon">⚡</div>
+                <h3 class="step-title">Generate Energy</h3>
+                <p class="step-desc">Produce solar energy and earn Green Tokens for every kilowatt-hour you generate.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <div class="step-icon">💰</div>
+                <h3 class="step-title">Sell Surplus</h3>
+                <p class="step-desc">Trade excess electricity to nearby buyers or local grids through our marketplace.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <div class="step-icon">⛓️</div>
+                <h3 class="step-title">Track on Blockchain</h3>
+                <p class="step-desc">Every transaction is recorded transparently on the blockchain for complete trust.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section class="impact-section">
+        <div class="impact-globe"></div>
+        <h2 class="section-title">Our Global Impact</h2>
+        <div class="impact-stats">
+            <div class="stat-box">
+                <div class="stat-number" data-target="15420">0</div>
+                <div class="stat-label">kWh Traded</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" data-target="8500">0</div>
+                <div class="stat-label">kg CO₂ Saved</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" data-target="1247">0</div>
+                <div class="stat-label">Active Producers</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Section -->
+    <section class="why-section">
+        <h2 class="section-title">Why SolarChain?</h2>
+        <div class="why-content">
+            <div class="why-text">
+                <h3>🌍 Transparent Energy Economy</h3>
+                <p>Built on blockchain technology, SolarChain ensures every transaction is transparent, secure, and traceable.</p>
+                
+                <h3>⚡ Empower Communities</h3>
+                <p>Enable households and businesses to become energy producers, creating a decentralized and sustainable power grid.</p>
+                
+                <h3>🌱 Sustainable Future</h3>
+                <p>Join the movement toward clean energy and contribute to reducing carbon emissions globally.</p>
+            </div>
+            <div class="why-illustration">🏙️</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-glow"></div>
+        <p class="cta-text">Be the spark that powers a sustainable future.</p>
+        <a href="dashboard.html" class="btn btn-primary">Join SolarChain Now</a>
+    </section>
+
+    <!-- Floating CTA Button -->
+    <a href="dashboard.html" class="floating-cta">Get Started →</a>
+
+    <script>
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 40; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.setProperty('--drift', (Math.random() - 0.5) * 2);
+            particle.style.animationDelay = Math.random() * 12 + 's';
+            particle.style.animationDuration = (Math.random() * 6 + 8) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Smooth scroll function
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe step cards
+        document.querySelectorAll('.step-card').forEach(card => observer.observe(card));
+        document.querySelectorAll('.why-text, .why-illustration').forEach(el => observer.observe(el));
+
+        // Counter animation for impact stats
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current).toLocaleString();
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target.toLocaleString();
+                }
+            };
+            updateCounter();
+        }
+
+        // Observe impact stats
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-number');
+                    counters.forEach(counter => animateCounter(counter));
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statsObserver.observe(document.querySelector('.impact-stats'));
+
+        // Show floating CTA on scroll
+        window.addEventListener('scroll', () => {
+            const floatingCta = document.querySelector('.floating-cta');
+            if (window.scrollY > 800) {
+                floatingCta.classList.add('visible');
+            } else {
+                floatingCta.classList.remove('visible');
+            }
+        });
+
+        // Parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) / 50;
+            const moveY = (e.clientY - window.innerHeight / 2) / 50;
+            
+            document.querySelectorAll('.float-icon').forEach((icon, index) => {
+                const speed = (index + 1) * 0.5;
+                icon.style.transform = `translate(${moveX * speed}px, ${moveY * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
